@@ -1,0 +1,19 @@
+version: '3'
+
+tasks:
+  setup:
+    cmds:
+      - docker-compose build --no-cache
+      - docker-compose run app mix setup
+  cmd:
+    cmds:
+      - docker-compose run --rm app sh
+  serve:
+    cmds:
+      - docker-compose up
+  format:
+    cmds:
+      - docker-compose run --rm app mix format
+  lint:
+    cmds:
+      - docker-compose run --rm app mix credo --strict

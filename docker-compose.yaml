@@ -1,0 +1,10 @@
+services:
+  app:
+    build: "."
+    volumes:
+      - ".:/src"
+    ports:
+      - "4000:4000"
+    environment:
+      - "ADMIN_USERNAME=user"
+      - "ADMIN_PASSWORD=password"
