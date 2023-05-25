@@ -1,21 +1,23 @@
-defmodule PokerWeb.Live.Admin.DataComponent do
+defmodule PokerWeb.Live.Admin.RoomsComponent do
   use Phoenix.LiveComponent
 
   def update(_assigns, socket) do
-    users = Poker.Repo.User.all()
-    {:ok, assign(socket, :users, users)}
+    rooms = Poker.Repo.Room.all()
+    {:ok, assign(socket, :rooms, rooms)}
   end
 
   def render(assigns) do
     ~H"""
     <div>
-      <p :if={@users == []}>
+      <p :if={@rooms == []}>
         У селі тихо-тихо, тільки іноді сколихується тінь молодого деревця та між гіллям,
         розсипаючись, зашерхотить наростень паморозі...
       </p>
       <ul>
-        <li :for={user <- @users}>
-          <%= user.username %> :: <%= user.created_at |> Timex.format!("{h24}:{m}") %>
+        <li :for={room <- @rooms}>
+          <%= room.id %> :: <%= room.created_at |> Timex.format!("{h24}:{m}") %> :: <%= room.members
+          |> Enum.map(fn x -> Poker.Repo.User.get(x).username end)
+          |> Enum.join(", ") %>
         </li>
       </ul>
     </div>

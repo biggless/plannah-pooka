@@ -8,6 +8,7 @@ defmodule Poker.Application do
       {Phoenix.PubSub, name: Poker.PubSub},
       PokerWeb.Endpoint,
       Poker.Repo.User,
+      Poker.Repo.Room,
       Poker.Cleanup
     ]
 

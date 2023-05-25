@@ -37,8 +37,8 @@ defmodule PokerWeb.Router do
     live_dashboard "/dashboard",
       metrics: PokerWeb.Telemetry,
       additional_pages: [
-        # <- add this
-        data: PokerWeb.Live.Admin.Data
+        users: PokerWeb.Live.Admin.Users,
+        rooms: PokerWeb.Live.Admin.Rooms
       ]
   end
 
