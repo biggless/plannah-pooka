@@ -58,7 +58,7 @@ defmodule PokerWeb.RoomLive do
         </button>
       </div>
       <div class="w-3/4">
-        <%= inspect @room %>
+        <%= inspect(@room) %>
       </div>
     </div>
     """
@@ -73,12 +73,12 @@ defmodule PokerWeb.RoomLive do
         %Poker.Model.Room{} = room -> room
       end
 
-    Poker.Repo.Room.add_user(room, user)
+    Poker.Repo.Room.add_user(room.id, user.id)
     {:noreply, assign(socket, room: room)}
   end
 
   def handle_event("vote", %{"vote" => vote}, socket) do
-    Poker.Repo.Room.add_vote(socket.assigns.room, socket.assigns.user, vote)
+    Poker.Repo.Room.add_vote(socket.assigns.room.id, socket.assigns.user.id, vote)
     {:noreply, socket}
   end
 end

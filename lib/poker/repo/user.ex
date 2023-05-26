@@ -20,7 +20,8 @@ defmodule Poker.Repo.User do
   def init(opts), do: {:ok, opts}
 
   @impl true
-  def handle_call({:insert, user}, _from, state), do: {:reply, user, Map.put(state, user.id, user)}
+  def handle_call({:insert, user}, _from, state),
+    do: {:reply, user, Map.put(state, user.id, user)}
 
   @impl true
   def handle_call({:get, id}, _from, state), do: {:reply, Map.get(state, id), state}

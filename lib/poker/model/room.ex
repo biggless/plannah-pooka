@@ -6,6 +6,6 @@ defmodule Poker.Model.Room do
       Poker.Repo.Room.insert(%__MODULE__{
         id: code || UUID.uuid4(),
         created_by: created_by,
-        created_at: Timex.now("UTC"),
+        created_at: Timex.now("UTC")
       })
 end
