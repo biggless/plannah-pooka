@@ -17,3 +17,6 @@ tasks:
   lint:
     cmds:
       - docker-compose run --rm app mix credo --strict
+  clean:
+    cmds:
+      - rm -rf _build deps

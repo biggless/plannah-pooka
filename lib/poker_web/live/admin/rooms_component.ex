@@ -15,12 +15,20 @@ defmodule PokerWeb.Live.Admin.RoomsComponent do
       </p>
       <ul>
         <li :for={room <- @rooms}>
-          <%= room.id %> :: <%= room.created_at |> Timex.format!("{h24}:{m}") %> :: <%= room.members
-          |> Enum.map(fn x -> Poker.Repo.User.get(x).username end)
-          |> Enum.join(", ") %>
+          <%= room.id %>
+          ::
+          <%= room.created_at |> Timex.format!("{h24}:{m}") %>
+          ::
+          <%= room_members(room) %>
         </li>
       </ul>
     </div>
     """
   end
+
+  defp room_members(room),
+    do:
+      room.members
+      |> Enum.map(fn x -> Poker.Repo.User.get(x).username end)
+      |> Enum.join(", ")
 end

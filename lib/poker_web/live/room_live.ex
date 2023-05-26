@@ -3,14 +3,15 @@ defmodule PokerWeb.RoomLive do
 
   def mount(_params, session, socket) do
     with %{"user_id" => user_id} <- session,
-         user when user != nil <- Poker.Repo.User.get(user_id) do
-      {:ok, assign(socket, :user, user)}
+         user when user != nil <- Poker.Repo.User.get(user_id),
+         room <- Poker.Repo.Room.get_by_user_id(user.id) do
+      {:ok, assign(socket, user: user, room: room)}
     else
       _ -> {:ok, push_redirect(socket, to: ~p"/auth")}
     end
   end
 
-  def render(assigns) do
+  def render(%{room: nil} = assigns) do
     ~H"""
     <div class="flex justify-center items-center min-h-screen bg-gray-100">
       <div class="bg-white p-8 rounded shadow-md flex">
@@ -32,12 +33,22 @@ defmodule PokerWeb.RoomLive do
     """
   end
 
+  def render(assigns) do
+    ~H"""
+    In da room
+    """
+  end
+
   def handle_event("new-room", _params, socket) do
     user = socket.assigns.user
     room = Poker.Model.Room.create(user.id)
-    IO.inspect("##############")
-    IO.inspect("##############")
-    IO.inspect(room)
-    {:noreply, socket}
+    join_room(user, room)
+    {:noreply, assign(socket, user: user, room: room)}
   end
+
+  defp join_room(user, room),
+    do:
+      room
+      |> Poker.Model.Room.add_user(user)
+      |> Poker.Repo.Room.update()
 end
