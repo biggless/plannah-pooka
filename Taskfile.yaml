@@ -4,7 +4,7 @@ tasks:
   setup:
     cmds:
       - docker-compose build --no-cache
-      - docker-compose run app mix setup
+      - docker-compose run --rm app mix setup
   cmd:
     cmds:
       - docker-compose run --rm app sh
