@@ -35,22 +35,24 @@ defmodule Poker.Repo.Room do
   @impl true
   def handle_call({:add_user, room_id, user_id}, _from, state) do
     room = Map.get(state, room_id)
-
+    room = %Poker.Model.Room{room | members: [user_id | room.members]}
+    Phoenix.PubSub.broadcast(Poker.PubSub, "room:#{room.id}", {:room_updated, room})
     {
       :reply,
       room,
-      Map.put(state, room_id, %Poker.Model.Room{room | members: [user_id | room.members]})
+      Map.put(state, room_id, room)
     }
   end
 
   @impl true
   def handle_call({:add_vote, room_id, user_id, vote}, _from, state) do
     room = Map.get(state, room_id)
-
+    room = %Poker.Model.Room{room | votes: Map.put(room.votes, user_id, vote)}
+    Phoenix.PubSub.broadcast(Poker.PubSub, "room:#{room.id}", {:room_updated, room})
     {
       :reply,
       room,
-      Map.put(state, room_id, %Poker.Model.Room{room | votes: Map.put(room.votes, user_id, vote)})
+      Map.put(state, room_id, room)
     }
   end
 end

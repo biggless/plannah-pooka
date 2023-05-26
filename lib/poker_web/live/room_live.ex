@@ -5,6 +5,7 @@ defmodule PokerWeb.RoomLive do
     with %{"user_id" => user_id} <- session,
          user when user != nil <- Poker.Repo.User.get(user_id),
          room <- Poker.Repo.Room.get_by_user_id(user.id) do
+      if connected?(socket) && room, do: subscribe(room.id)
       {:ok, assign(socket, user: user, roomcode: "", room: room)}
     else
       _ -> {:ok, push_redirect(socket, to: ~p"/auth")}
@@ -72,7 +73,7 @@ defmodule PokerWeb.RoomLive do
         nil -> Poker.Model.Room.create(roomcode, user.id)
         %Poker.Model.Room{} = room -> room
       end
-
+    subscribe(room.id)
     Poker.Repo.Room.add_user(room.id, user.id)
     {:noreply, assign(socket, room: room)}
   end
@@ -81,4 +82,9 @@ defmodule PokerWeb.RoomLive do
     Poker.Repo.Room.add_vote(socket.assigns.room.id, socket.assigns.user.id, vote)
     {:noreply, socket}
   end
+
+  def handle_info({:room_updated, room}, socket), do:
+    {:noreply, assign(socket, room: room)}
+
+  defp subscribe(room_id), do: Phoenix.PubSub.subscribe(Poker.PubSub, "room:#{room_id}")
 end
