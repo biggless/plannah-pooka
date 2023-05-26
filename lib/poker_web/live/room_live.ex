@@ -16,12 +16,11 @@ defmodule PokerWeb.RoomLive do
     <div class="flex justify-center items-center min-h-screen bg-gray-100">
       <div class="bg-white p-8 rounded shadow-md">
         <h2 class="text-2xl font-semibold mb-6">Кімната</h2>
-        <.form
-          action={~p"/auth"}
-          phx-submit="join-room"
-        >
+        <.form action={~p"/auth"} phx-submit="join-room">
           <div class="mb-4">
-            <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Код кімнати</label>
+            <label for="username" class="block text-gray-700 text-sm font-bold mb-2">
+              Код кімнати
+            </label>
             <input
               type="text"
               id="roomcode"
@@ -47,22 +46,39 @@ defmodule PokerWeb.RoomLive do
 
   def render(assigns) do
     ~H"""
-    In da room
+    <div class="flex">
+      <div class="w-1/4">
+        <button
+          :for={i <- [1, 3, 5, 8, 13, 20, 40, 100, "😱", "☕️"]}
+          class="w-3/4 bg-indigo-500 text-white font-bold py-2 px-4 rounded focus:outline-none hover:bg-indigo-600 m-4"
+          phx-click="vote"
+          phx-value-vote={i}
+        >
+          <%= i %>
+        </button>
+      </div>
+      <div class="w-3/4">
+        <%= inspect @room %>
+      </div>
+    </div>
     """
   end
 
   def handle_event("join-room", %{"roomcode" => roomcode}, socket) do
     user = socket.assigns.user
 
-    room = case Poker.Repo.Room.get(roomcode) do
-      nil -> Poker.Model.Room.create(user.id)
-      %Poker.Model.Room{} = room -> room
-    end
+    room =
+      case Poker.Repo.Room.get(roomcode) do
+        nil -> Poker.Model.Room.create(roomcode, user.id)
+        %Poker.Model.Room{} = room -> room
+      end
 
-    room
-    |> Poker.Model.Room.add_user(user)
-    |> Poker.Repo.Room.update()
-
+    Poker.Repo.Room.add_user(room, user)
     {:noreply, assign(socket, room: room)}
+  end
+
+  def handle_event("vote", %{"vote" => vote}, socket) do
+    Poker.Repo.Room.add_vote(socket.assigns.room, socket.assigns.user, vote)
+    {:noreply, socket}
   end
 end

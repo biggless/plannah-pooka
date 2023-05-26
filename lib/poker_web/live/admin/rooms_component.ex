@@ -15,11 +15,9 @@ defmodule PokerWeb.Live.Admin.RoomsComponent do
       </p>
       <ul>
         <li :for={room <- @rooms}>
-          <%= room.id %>
-          ::
-          <%= room.created_at |> Timex.format!("{h24}:{m}") %>
-          ::
-          <%= room_members(room) %>
+          <%= room.id %> :: <%= room.created_at |> Timex.format!("{h24}:{m}") %> :: <%= room_members(
+            room
+          ) %>
         </li>
       </ul>
     </div>

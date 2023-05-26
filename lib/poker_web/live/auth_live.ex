@@ -6,7 +6,7 @@ defmodule PokerWeb.AuthLive do
          user when user != nil <- Poker.Repo.User.get(user_id) do
       {:ok, push_redirect(socket, to: ~p"/")}
     else
-      _ -> {:ok, assign(socket, username: "", sign_in: false)}
+      _ -> {:ok, assign(socket, sign_in: false)}
     end
   end
 
@@ -15,12 +15,7 @@ defmodule PokerWeb.AuthLive do
     <div class="flex justify-center items-center min-h-screen bg-gray-100">
       <div class="bg-white p-8 rounded shadow-md">
         <h2 class="text-2xl font-semibold mb-6">Розпізнавання</h2>
-        <.form
-          action={~p"/auth"}
-          phx-change="set_username"
-          phx-submit="sign_in"
-          phx-trigger-action={@sign_in}
-        >
+        <.form action={~p"/auth"} phx-submit="sign_in" phx-trigger-action={@sign_in}>
           <div class="mb-4">
             <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Назвисько</label>
             <input
@@ -28,8 +23,6 @@ defmodule PokerWeb.AuthLive do
               id="username"
               class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
               name="username"
-              value={@username}
-              phx-debounce="300"
               placeholder="Степан Бандера"
               required
               autofocus
